@@ -40,23 +40,12 @@ AC_DEFUN([SQLITE3],
                                    \+ $sqlite3_version_req_minor \* 1000 \
                                    \+ $sqlite3_version_req_micro`
 
-        AC_MSG_CHECKING([for SQLite3 library <= $sqlite3_version_req])
+        AC_MSG_CHECKING([for SQLite3 library >= $sqlite3_version_req])
 
         if test "$ac_sqlite3_path" != ""; then
             ac_sqlite3_ldflags="-L$ac_sqlite3_path/lib"
             ac_sqlite3_cppflags="-I$ac_sqlite3_path/include"
-        else
-            for ac_sqlite3_path_tmp in /usr /usr/local /opt ; do
-                if test -f "$ac_sqlite3_path_tmp/include/$ac_sqlite3_header" \
-                    && test -r "$ac_sqlite3_path_tmp/include/$ac_sqlite3_header"; then
-                    ac_sqlite3_path=$ac_sqlite3_path_tmp
-                    ac_sqlite3_ldflags="-I$ac_sqlite3_path_tmp/include"
-                    ac_sqlite3_cppflags="-L$ac_sqlite3_path_tmp/lib"
-                    break;
-                fi
-            done
         fi
-
         ac_sqlite3_ldflags="$ac_sqlite3_ldflags -lsqlite3"
 
         saved_CPPFLAGS="$CPPFLAGS"
@@ -67,7 +56,7 @@ AC_DEFUN([SQLITE3],
             [
             AC_LANG_PROGRAM([[@%:@include <sqlite3.h>]],
                 [[
-#if (SQLITE_VERSION_NUMBER <= $sqlite3_version_req_number)
+#if (SQLITE_VERSION_NUMBER >= $sqlite3_version_req_number)
 // Everything is okay
 #else
 #  error SQLite version is too old
@@ -89,24 +78,8 @@ AC_DEFUN([SQLITE3],
         CPPFLAGS="$saved_CPPFLAGS"
 
         if test "$success" = "yes"; then
-
             SQLITE3_CFLAGS="$ac_sqlite3_cppflags"
             SQLITE3_LDFLAGS="$ac_sqlite3_ldflags"
-
-            ac_sqlite3_header_path="$ac_sqlite3_path/include/$ac_sqlite3_header"
-
-            dnl Retrieve SQLite release version
-            if test "x$ac_sqlite3_header_path" != "x"; then
-                ac_sqlite3_version=`cat $ac_sqlite3_header_path \
-                    | grep '#define.*SQLITE_VERSION.*\"' | sed -e 's/.* "//' \
-                        | sed -e 's/"//'`
-                if test $ac_sqlite3_version != ""; then
-                    SQLITE3_VERSION=$ac_sqlite3_version
-                else
-                    AC_MSG_WARN([Can not find SQLITE_VERSION macro in sqlite3.h header to retrieve SQLite version!])
-                fi
-            fi
-
             AC_SUBST(SQLITE3_CFLAGS)
             AC_SUBST(SQLITE3_LDFLAGS)
             AC_SUBST(SQLITE3_VERSION)
