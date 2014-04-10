@@ -3,7 +3,7 @@ AC_DEFUN([SQLITE3],
     AC_ARG_WITH([sqlite3],
         AC_HELP_STRING(
             [--with-sqlite3=@<:@ARG@:>@],
-            [use SQLite 3 library @<:@default=yes@:>@, optionally specify the prefix for sqlite3 library]
+            [use sqlite 3 library @<:@default=yes@:>@, optionally specify the prefix for sqlite3 library]
         ),
         [
         if test "$withval" = "no"; then
@@ -40,7 +40,7 @@ AC_DEFUN([SQLITE3],
                                    \+ $sqlite3_version_req_minor \* 1000 \
                                    \+ $sqlite3_version_req_micro`
 
-        AC_MSG_CHECKING([for SQLite3 library >= $sqlite3_version_req])
+        AC_MSG_CHECKING([for sqlite3 library >= $sqlite3_version_req])
 
         if test "$ac_sqlite3_path" != ""; then
             ac_sqlite3_ldflags="-L$ac_sqlite3_path/lib"

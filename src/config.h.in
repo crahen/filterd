@@ -6,9 +6,6 @@
 /* Define to 1 if you have <boost/asio.hpp> */
 #undef HAVE_BOOST_ASIO_HPP
 
-/* Define to 1 if you have <boost/date_time/posix_time/posix_time.hpp> */
-#undef HAVE_BOOST_DATE_TIME_POSIX_TIME_POSIX_TIME_HPP
-
 /* Define to 1 if you have <boost/functional/hash.hpp> */
 #undef HAVE_BOOST_FUNCTIONAL_HASH_HPP
 
@@ -17,6 +14,9 @@
 
 /* Define to 1 if you have <boost/test/unit_test.hpp> */
 #undef HAVE_BOOST_TEST_UNIT_TEST_HPP
+
+/* Define to 1 if you have <boost/thread.hpp> */
+#undef HAVE_BOOST_THREAD_HPP
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H

@@ -25,13 +25,13 @@ AC_DEFUN([LIBFCGI],
 
     if test "x$WANT_LIBFCGI" = "xyes"; then
 
-        AC_MSG_CHECKING([libfcgi++])
+        AC_MSG_CHECKING([libfcgi])
 
         if test "$ac_libfcgi_path" != ""; then
             ac_libfcgi_ldflags="-L$ac_libfcgi_path/lib"
             ac_libfcgi_cppflags="-I$ac_libfcgi_path/include"
         fi
-        ac_libfcgi_ldflags="$ac_libfcgi_ldflags -llibfcgi"
+        ac_libfcgi_ldflags="$ac_libfcgi_ldflags -lfcgi"
 
         saved_CPPFLAGS="$CPPFLAGS"
         CPPFLAGS="$CPPFLAGS $ac_libfcgi_cppflags"
@@ -39,7 +39,7 @@ AC_DEFUN([LIBFCGI],
         AC_LANG_PUSH(C++)
         AC_COMPILE_IFELSE(
             [
-            AC_LANG_PROGRAM([[@%:@include <fasgtcgi.h>]],
+            AC_LANG_PROGRAM([[@%:@include <fcgio.h>]],
                 [[
                 ]]
             )
