@@ -615,9 +615,12 @@ LIBOBJS
 SQLITE3_VERSION
 SQLITE3_LDFLAGS
 SQLITE3_CFLAGS
-FASTCGI_VERSION
-FASTCGI_LDFLAGS
-FASTCGI_CFLAGS
+LIBFCGI_VERSION
+LIBFCGI_LDFLAGS
+LIBFCGI_CFLAGS
+BOOST_UNIT_TEST_FRAMEWORK_LIBS
+BOOST_UNIT_TEST_FRAMEWORK_LDPATH
+BOOST_UNIT_TEST_FRAMEWORK_LDFLAGS
 BOOST_DATE_TIME_LIBS
 BOOST_DATE_TIME_LDPATH
 BOOST_DATE_TIME_LDFLAGS
@@ -659,6 +662,7 @@ SED
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
 CCDEPMODE
+am__nodep
 AMDEPBACKSLASH
 AMDEP_FALSE
 AMDEP_TRUE
@@ -755,7 +759,7 @@ with_sysroot
 enable_libtool_lock
 with_boost
 enable_static_boost
-with_fastcgi
+with_libfcgi
 with_sqlite3
 with_cronolog
 '
@@ -1412,8 +1416,8 @@ Optional Packages:
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
   --with-boost=DIR        prefix of Boost 1.34 [guess]
-  --with-fastcgi=[ARG]    use SQLite 3 library [default=yes], optionally
-                          specify the prefix for fastcgi library
+  --with-libfcgi=[ARG]    use SQLite 3 library [default=yes], optionally
+                          specify the prefix for libfcgi library
   --with-sqlite3=[ARG]    use SQLite 3 library [default=yes], optionally
                           specify the prefix for sqlite3 library
   --with-cronolog=[ARG]   Optionally specify the prefix for the cronolog tool,
@@ -2833,11 +2837,11 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 
 # We need awk for the "check" target.  The system "awk" is bad on
 # some platforms.
-# Always define AMTAR for backward compatibility.
+# Always define AMTAR for backward compatibility.  Yes, it's still used
+# in the wild :-(  We should find a proper way to deprecate it ...
+AMTAR='$${TAR-tar}'
 
-AMTAR=${AMTAR-"${am_missing_run}tar"}
-
-am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
+am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
@@ -3062,6 +3066,7 @@ fi
 if test "x$enable_dependency_tracking" != xno; then
   am_depcomp="$ac_aux_dir/depcomp"
   AMDEPBACKSLASH='\'
+  am__nodep='_no'
 fi
  if test "x$enable_dependency_tracking" != xno; then
   AMDEP_TRUE=
@@ -3875,6 +3880,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -3934,7 +3940,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -11622,6 +11628,7 @@ else
   # instance it was reported that on HP-UX the gcc test will end up
   # making a dummy file named `D' -- because `-MD' means `put the output
   # in D'.
+  rm -rf conftest.dir
   mkdir conftest.dir
   # Copy depcomp to subdir because otherwise we won't find it if we're
   # using a relative directory.
@@ -11681,7 +11688,7 @@ else
 	break
       fi
       ;;
-    msvisualcpp | msvcmsys)
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
       # This compiler won't grok `-c -o', but also, the minuso test has
       # not run yet.  These depmodes are late enough in the game, and
       # so weak that their functioning should not be impacted.
@@ -15872,45 +15879,326 @@ fi
 
 
 
-#BOOST_TEST
+if test x"$boost_cv_inc_path" = xno; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Boost not available, not searching for the Boost unit_test_framework library" >&5
+$as_echo "$as_me: Boost not available, not searching for the Boost unit_test_framework library" >&6;}
+else
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+if test x"$boost_cv_inc_path" = xno; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Boost not available, not searching for boost/test/unit_test.hpp" >&5
+$as_echo "$as_me: Boost not available, not searching for boost/test/unit_test.hpp" >&6;}
+else
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+boost_save_CPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
+ac_fn_cxx_check_header_mongrel "$LINENO" "boost/test/unit_test.hpp" "ac_cv_header_boost_test_unit_test_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_boost_test_unit_test_hpp" = xyes; then :
+
+$as_echo "#define HAVE_BOOST_TEST_UNIT_TEST_HPP 1" >>confdefs.h
+
+else
+  as_fn_error $? "cannot find boost/test/unit_test.hpp" "$LINENO" 5
+fi
 
 
-# Check whether --with-fastcgi was given.
-if test "${with_fastcgi+set}" = set; then :
-  withval=$with_fastcgi;
+CPPFLAGS=$boost_save_CPPFLAGS
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+fi
+
+boost_save_CPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
+# Now let's try to find the library.  The algorithm is as follows: first look
+# for a given library name according to the user's PREFERRED-RT-OPT.  For each
+# library name, we prefer to use the ones that carry the tag (toolset name).
+# Each library is searched through the various standard paths were Boost is
+# usually installed.  If we can't find the standard variants, we try to
+# enforce -mt (for instance on MacOSX, libboost_threads.dylib doesn't exist
+# but there's -obviously- libboost_threads-mt.dylib).
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for the Boost unit_test_framework library" >&5
+$as_echo_n "checking for the Boost unit_test_framework library... " >&6; }
+if ${boost_cv_lib_unit_test_framework+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  boost_cv_lib_unit_test_framework=no
+  case "" in #(
+    mt | mt-) boost_mt=-mt; boost_rtopt=;; #(
+    mt* | mt-*) boost_mt=-mt; boost_rtopt=`expr "X" : 'Xmt-*\(.*\)'`;; #(
+    *) boost_mt=; boost_rtopt=;;
+  esac
+  if test $enable_static_boost = yes; then
+    boost_rtopt="s$boost_rtopt"
+  fi
+  # Find the proper debug variant depending on what we've been asked to find.
+  case $boost_rtopt in #(
+    *d*) boost_rt_d=$boost_rtopt;; #(
+    *[sgpn]*) # Insert the `d' at the right place (in between `sg' and `pn')
+      boost_rt_d=`echo "$boost_rtopt" | sed 's/\(s*g*\)\(p*n*\)/\1\2/'`;; #(
+    *) boost_rt_d='-d';;
+  esac
+  # If the PREFERRED-RT-OPT are not empty, prepend a `-'.
+  test -n "$boost_rtopt" && boost_rtopt="-$boost_rtopt"
+  $boost_guess_use_mt && boost_mt=-mt
+  # Look for the abs path the static archive.
+  # $libext is computed by Libtool but let's make sure it's non empty.
+  test -z "$libext" &&
+    as_fn_error $? "the libext variable is empty, did you invoke Libtool?" "$LINENO" 5
+  boost_save_ac_objext=$ac_objext
+  # Generate the test file.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <boost/test/unit_test.hpp>
+using boost::unit_test::test_suite;
+               test_suite* init_unit_test_suite(int argc, char ** argv)
+               { return NULL; }
+int
+main ()
+{
+BOOST_CHECK(2 == 2);
+  ;
+  return 0;
+}
+_ACEOF
+  if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_objext=do_not_rm_me_plz
+else
+  as_fn_error $? "cannot compile a test that uses Boost unit_test_framework" "$LINENO" 5
+fi
+rm -f core conftest.err conftest.$ac_objext
+  ac_objext=$boost_save_ac_objext
+  boost_failed_libs=
+# Don't bother to ident the 6 nested for loops, only the 2 innermost ones
+# matter.
+for boost_tag_ in -$boost_cv_lib_tag ''; do
+for boost_ver_ in -$boost_cv_lib_version ''; do
+for boost_mt_ in $boost_mt -mt ''; do
+for boost_rtopt_ in $boost_rtopt '' -d; do
+  for boost_lib in \
+    boost_unit_test_framework$boost_tag_$boost_mt_$boost_rtopt_$boost_ver_ \
+    boost_unit_test_framework$boost_tag_$boost_rtopt_$boost_ver_ \
+    boost_unit_test_framework$boost_tag_$boost_mt_$boost_ver_ \
+    boost_unit_test_framework$boost_tag_$boost_ver_
+  do
+    # Avoid testing twice the same lib
+    case $boost_failed_libs in #(
+      *@$boost_lib@*) continue;;
+    esac
+    # If with_boost is empty, we'll search in /lib first, which is not quite
+    # right so instead we'll try to a location based on where the headers are.
+    boost_tmp_lib=$with_boost
+    test x"$with_boost" = x && boost_tmp_lib=${boost_cv_inc_path%/include}
+    for boost_ldpath in "$boost_tmp_lib/lib" '' \
+             /opt/local/lib* /usr/local/lib* /opt/lib* /usr/lib* \
+             "$with_boost" C:/Boost/lib /lib*
+    do
+      test -e "$boost_ldpath" || continue
+      boost_save_LDFLAGS=$LDFLAGS
+      # Are we looking for a static library?
+      case $boost_ldpath:$boost_rtopt_ in #(
+        *?*:*s*) # Yes (Non empty boost_ldpath + s in rt opt)
+          boost_cv_lib_unit_test_framework_LIBS="$boost_ldpath/lib$boost_lib.$libext"
+          test -e "$boost_cv_lib_unit_test_framework_LIBS" || continue;; #(
+        *) # No: use -lboost_foo to find the shared library.
+          boost_cv_lib_unit_test_framework_LIBS="-l$boost_lib";;
+      esac
+      boost_save_LIBS=$LIBS
+      LIBS="$boost_cv_lib_unit_test_framework_LIBS $LIBS"
+      test x"$boost_ldpath" != x && LDFLAGS="$LDFLAGS -L$boost_ldpath"
+      rm -f conftest$ac_exeext
+boost_save_ac_ext=$ac_ext
+boost_use_source=:
+# If we already have a .o, re-use it.  We change $ac_ext so that $ac_link
+# tries to link the existing object file instead of compiling from source.
+test -f conftest.$ac_objext && ac_ext=$ac_objext && boost_use_source=false &&
+  $as_echo "$as_me:${as_lineno-$LINENO}: re-using the existing conftest.$ac_objext" >&5
+if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_executable_p conftest$ac_exeext
+       }; then :
+  boost_cv_lib_unit_test_framework=yes
+else
+  if $boost_use_source; then
+         $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+       fi
+       boost_cv_lib_unit_test_framework=no
+fi
+ac_objext=$boost_save_ac_objext
+ac_ext=$boost_save_ac_ext
+rm -f core conftest.err conftest_ipa8_conftest.oo \
+      conftest$ac_exeext
+      ac_objext=$boost_save_ac_objext
+      LDFLAGS=$boost_save_LDFLAGS
+      LIBS=$boost_save_LIBS
+      if test x"$boost_cv_lib_unit_test_framework" = xyes; then
+        # Check or used cached result of whether or not using -R or -rpath makes sense.
+        # Some implementations of ld, such as for Mac OSX, require -rpath but
+        # -R is the flag known to work on other systems.
+        # https://github.com/tsuna/boost.m4/issues/19
+        if ${boost_cv_rpath_link_ldflag+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  for boost_cv_rpath_link_ldflag in -Wl,-R, -Wl,-rpath,; do
+            LDFLAGS="$boost_save_LDFLAGS -L$boost_ldpath $boost_cv_rpath_link_ldflag$boost_ldpath"
+            LIBS="$boost_save_LIBS $boost_cv_lib_unit_test_framework_LIBS"
+            rm -f conftest$ac_exeext
+boost_save_ac_ext=$ac_ext
+boost_use_source=:
+# If we already have a .o, re-use it.  We change $ac_ext so that $ac_link
+# tries to link the existing object file instead of compiling from source.
+test -f conftest.$ac_objext && ac_ext=$ac_objext && boost_use_source=false &&
+  $as_echo "$as_me:${as_lineno-$LINENO}: re-using the existing conftest.$ac_objext" >&5
+if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_executable_p conftest$ac_exeext
+       }; then :
+  boost_rpath_link_ldflag_found=yes
+              break
+else
+  if $boost_use_source; then
+         $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+       fi
+       boost_rpath_link_ldflag_found=no
+fi
+ac_objext=$boost_save_ac_objext
+ac_ext=$boost_save_ac_ext
+rm -f core conftest.err conftest_ipa8_conftest.oo \
+      conftest$ac_exeext
+          done
+          if test "x$boost_rpath_link_ldflag_found" != "xyes"; then :
+  as_fn_error $? "Unable to determine whether to use -R or -rpath" "$LINENO" 5
+fi
+          LDFLAGS=$boost_save_LDFLAGS
+          LIBS=$boost_save_LIBS
+
+fi
+
+        boost_cv_lib_unit_test_framework_LDFLAGS="-L$boost_ldpath $boost_cv_rpath_link_ldflag$boost_ldpath"
+        boost_cv_lib_unit_test_framework_LDPATH="$boost_ldpath"
+        break 6
+      else
+        boost_failed_libs="$boost_failed_libs@$boost_lib@"
+      fi
+    done
+  done
+done
+done
+done
+done
+rm -f conftest.$ac_objext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $boost_cv_lib_unit_test_framework" >&5
+$as_echo "$boost_cv_lib_unit_test_framework" >&6; }
+case $boost_cv_lib_unit_test_framework in #(
+  no) $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+    as_fn_error $? "cannot find the flags to link with Boost unit_test_framework" "$LINENO" 5
+    ;;
+esac
+BOOST_UNIT_TEST_FRAMEWORK_LDFLAGS=$boost_cv_lib_unit_test_framework_LDFLAGS
+BOOST_UNIT_TEST_FRAMEWORK_LDPATH=$boost_cv_lib_unit_test_framework_LDPATH
+BOOST_LDPATH=$boost_cv_lib_unit_test_framework_LDPATH
+BOOST_UNIT_TEST_FRAMEWORK_LIBS=$boost_cv_lib_unit_test_framework_LIBS
+CPPFLAGS=$boost_save_CPPFLAGS
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+fi
+
+
+
+
+
+# Check whether --with-libfcgi was given.
+if test "${with_libfcgi+set}" = set; then :
+  withval=$with_libfcgi;
         if test "$withval" = "no"; then
-            WANT_FASTCGI="no"
+            WANT_LIBFCGI="no"
         elif test "$withval" = "yes"; then
-            WANT_FASTCGI="yes"
-            ac_fastcgi_path=""
+            WANT_LIBFCGI="yes"
+            ac_libfcgi_path=""
         else
-            WANT_FASTCGI="yes"
-            ac_fastcgi_path="$withval"
+            WANT_LIBFCGI="yes"
+            ac_libfcgi_path="$withval"
         fi
 
 else
-  WANT_FASTCGI="yes"
+  WANT_LIBFCGI="yes"
 
 fi
 
 
-    FASTCGI_CFLAGS=""
-    FASTCGI_LDFLAGS=""
-    FASTCGI_VERSION=""
+    LIBFCGI_CFLAGS=""
+    LIBFCGI_LDFLAGS=""
+    LIBFCGI_VERSION=""
 
-    if test "x$WANT_FASTCGI" = "xyes"; then
+    if test "x$WANT_LIBFCGI" = "xyes"; then
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking fastcgi++" >&5
-$as_echo_n "checking fastcgi++... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking libfcgi++" >&5
+$as_echo_n "checking libfcgi++... " >&6; }
 
-        if test "$ac_fastcgi_path" != ""; then
-            ac_fastcgi_ldflags="-L$ac_fastcgi_path/lib"
-            ac_fastcgi_cppflags="-I$ac_fastcgi_path/include"
+        if test "$ac_libfcgi_path" != ""; then
+            ac_libfcgi_ldflags="-L$ac_libfcgi_path/lib"
+            ac_libfcgi_cppflags="-I$ac_libfcgi_path/include"
         fi
-        ac_fastcgi_ldflags="$ac_fastcgi_ldflags -lfastcgi"
+        ac_libfcgi_ldflags="$ac_libfcgi_ldflags -llibfcgi"
 
         saved_CPPFLAGS="$CPPFLAGS"
-        CPPFLAGS="$CPPFLAGS $ac_fastcgi_cppflags"
+        CPPFLAGS="$CPPFLAGS $ac_libfcgi_cppflags"
 
         ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -15921,7 +16209,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-            #include <fastcgi++/http.h>
+            #include <fasgtcgi.h>
 int
 main ()
 {
@@ -15958,13 +16246,13 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
         CPPFLAGS="$saved_CPPFLAGS"
 
         if test "$success" = "yes"; then
-            FASTCGI_CFLAGS="$ac_fastcgi_cppflags"
-            FASTCGI_LDFLAGS="$ac_fastcgi_ldflags"
+            LIBFCGI_CFLAGS="$ac_libfcgi_cppflags"
+            LIBFCGI_LDFLAGS="$ac_libfcgi_ldflags"
 
 
 
 
-$as_echo "#define HAVE_FASTCGI /**/" >>confdefs.h
+$as_echo "#define HAVE_LIBFCGI /**/" >>confdefs.h
 
         fi
     fi
