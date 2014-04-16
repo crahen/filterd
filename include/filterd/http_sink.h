@@ -9,8 +9,11 @@ namespace filterd {
 template<typename T>
 class HttpSink : public Sink<T> {
   public:
-    virtual ~HttpSink() {}
-    virtual void put(long timestamp, const std::string& name, T value) {}
+    HttpSink(const std::string& url);
+    virtual ~HttpSink();
+    virtual void put(long timestamp, const std::string& name, T value);
+  private:
+    std::string url;
 };
 
 }

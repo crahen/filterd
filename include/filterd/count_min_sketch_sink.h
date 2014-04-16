@@ -11,8 +11,15 @@ namespace filterd {
 template<typename T>
 class CountMinSketchSink : public Sink<T> {
   public:
-    virtual ~CountMinSketchSink() {}
-    virtual void put(long timestamp, const std::string& name, T value) {}
+    CountMinSketchSink(T lower_bound, T upper_bound, size_t num_levels, float epsilon, float delta);
+    virtual ~CountMinSketchSink();
+    virtual void put(long timestamp, const std::string& name, T value);
+  private:
+    T lower_bound;
+    T upper_bound;
+    size_t num_levels;
+    float epsilon;
+    float delta;
 };
 
 }

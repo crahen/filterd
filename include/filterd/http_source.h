@@ -9,8 +9,11 @@ namespace filterd {
 template<typename T>
 class HttpSource : public Source<T> {
   public:
-    virtual ~HttpSource() {}
-    virtual T get(long timestamp, const std::string& name) {}
+    HttpSource(const std::string& url);
+    virtual ~HttpSource();
+    virtual T get(long timestamp, const std::string& name);
+  private:
+    std::string url;
 };
 
 }

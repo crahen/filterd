@@ -9,8 +9,11 @@ namespace filterd {
 template<typename T>
 class UdpSource : public Source<T> {
   public:
-    virtual ~UdpSource() {}
-    virtual T get(long timestamp, const std::string& name) {}
+    UdpSource(const std::string& url);
+    virtual ~UdpSource();
+    virtual T get(long timestamp, const std::string& name);
+  private:
+    std::string url;
 };
 
 }

@@ -9,8 +9,11 @@ namespace filterd {
 template<typename T>
 class BufferingSink : public Sink<T> {
   public:
-    virtual ~BufferingSink() {}
-    virtual void put(long timestamp, const std::string& name, T value) {}
+    BufferingSink(size_t size);
+    virtual ~BufferingSink();
+    virtual void put(long timestamp, const std::string& name, T value);
+  private:
+    size_t size;
 };
 
 }
