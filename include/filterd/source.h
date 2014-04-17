@@ -23,15 +23,18 @@ class Source {
  */
 template<typename T>
 class AbstractSource {
-  std::unique_ptr<Source<T>>& source;
+
+  Source<T>* source;
+
   public:
-    AbstractSource(std::unique_ptr<Source<T>>& source) : source(source) {}
+    AbstractSource(Source<T>* source) : source(source) {}
     virtual ~AbstractSource() {}
 
     /**
      */
     virtual T get(long timestamp, const std::string& name) {
-      source->get(timestamp, name);
+      if (source)
+        source->get(timestamp, name);
     }
 
 };
@@ -40,12 +43,15 @@ class AbstractSource {
  */
 template<typename T>
 class SourceFactory {
+
   public:
+
     virtual ~SourceFactory() {}
 
     /**
      */
     virtual std::unique_ptr<Source<T>> newSource() = 0;
+
 };
 
 }

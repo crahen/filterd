@@ -7,10 +7,10 @@ namespace filterd {
 /**
  */
 template<typename T>
-class IdentitySource : public Source<T> {
+class IdentitySource : public AbstractSource<T> {
   public:
+    IdentitySource(Source<T>* source) : AbstractSource<T>(source) {}
     virtual ~IdentitySource() {}
-    virtual T get(long timestamp, const std::string& name) {}
 };
 
 }

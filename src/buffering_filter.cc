@@ -7,7 +7,7 @@
 namespace filterd {
 
 template <typename T>
-BufferingSink<T>::BufferingSink(size_t size) : size(size) {} 
+BufferingSink<T>::BufferingSink(Sink<T>* sink, size_t size) : AbstractSink<T>(sink), size(size) {} 
 
 template <typename T>
 BufferingSink<T>::~BufferingSink() {

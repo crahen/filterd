@@ -12,8 +12,8 @@ namespace filterd {
  * for a stream data using a relatively small, bounded amount of storage.
  *
  * Original Paper:
- * [MP80]  Munro & Paterson, "Selection and Sorting with Limited Storage",
- *         Theoretical Computer Science, Vol 12, p 315-323, 1980.
+ * Munro & Paterson, "Selection and Sorting with Limited Storage",
+ * Theoretical Computer Science, Vol 12, p 315-323, 1980.
  * http://scholar.google.com/scholar?q=munro+paterson
  *
  * Implementation From Cloudera:
@@ -116,11 +116,6 @@ public:
     int index = buffers[0]->size() < maxElementsPerBuffer ? 0 : 1;
     buffers[index]->push_back(elem);
     totalElements++;
-  }
-
-  void clear() {
-    buffers.clear();
-    totalElements = 0;
   }
 
 private:

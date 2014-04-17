@@ -7,10 +7,10 @@ namespace filterd {
 /**
  */
 template<typename T>
-class IdentitySink : public Sink<T> {
+class IdentitySink : public AbstractSink<T> {
   public:
+    IdentitySink(Sink<T>* sink) : AbstractSink<T>(sink) {}
     virtual ~IdentitySink() {}
-    virtual void put(long timestamp, const std::string& name, T value) {}
 };
 
 }

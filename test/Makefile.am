@@ -22,4 +22,5 @@ TESTS = all_tests
 bin_PROGRAMS = all_tests
 
 all_tests_SOURCES = all_tests.cc \
+										count_min_sketch_test.cc \
 										munro_paterson_estimator_test.cc

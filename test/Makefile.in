@@ -54,6 +54,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_all_tests_OBJECTS = all_tests.$(OBJEXT) \
+	count_min_sketch_test.$(OBJEXT) \
 	munro_paterson_estimator_test.$(OBJEXT)
 all_tests_OBJECTS = $(am_all_tests_OBJECTS)
 all_tests_LDADD = $(LDADD)
@@ -238,6 +239,7 @@ AM_LDFLAGS = $(SQLITE3_LDFLAGS) \
 						 $(BOOST_UNIT_TEST_FRAMEWORK_LIBS)
 
 all_tests_SOURCES = all_tests.cc \
+										count_min_sketch_test.cc \
 										munro_paterson_estimator_test.cc
 
 all: all-am
@@ -328,6 +330,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/all_tests.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/count_min_sketch_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/munro_paterson_estimator_test.Po@am__quote@
 
 .cc.o:

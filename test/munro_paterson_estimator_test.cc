@@ -7,7 +7,7 @@
 using namespace filterd;
 using namespace std;
 
-BOOST_AUTO_TEST_SUITE(test)
+BOOST_AUTO_TEST_SUITE(test_munro_paterson)
 
 BOOST_AUTO_TEST_CASE(test_basic) {
 

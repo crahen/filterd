@@ -11,7 +11,7 @@ template<typename T>
 class MunroPatersonSink : public AbstractSink<T> {
   public:
 
-    MunroPatersonSink(Sink<T>& sink, size_t numQuantiles);
+    MunroPatersonSink(Sink<T>* sink, size_t numQuantiles);
     virtual ~MunroPatersonSink();
 
     virtual void put(long timestamp, const std::string& name, T value);

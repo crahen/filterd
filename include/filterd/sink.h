@@ -22,15 +22,18 @@ class Sink {
  */
 template<typename T>
 class AbstractSink {
-  std::unique_ptr<Sink<T>>& sink;
+
+  Sink<T>* sink;
+
   public:
-    AbstractSink(std::unique_ptr<Sink<T>>& sink) : sink(sink) {}
+    AbstractSink(Sink<T>* sink) : sink(sink) {}
     virtual ~AbstractSink() {}
 
     /**
      */
     virtual T put(long timestamp, const std::string& name) {
-      sink->put(timestamp, name);
+      if (sink)
+        sink->put(timestamp, name);
     }
 
 };
@@ -39,12 +42,14 @@ class AbstractSink {
  */
 template<typename T>
 class SinkFactory {
+
   public:
     virtual ~SinkFactory() {}
 
     /**
      */
     virtual std::unique_ptr<Sink<T>> newSink() = 0;
+
 };
 
 }

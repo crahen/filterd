@@ -4,7 +4,7 @@
 namespace filterd {
 
 template <typename T>
-MunroPatersonSink<T>::MunroPatersonSink(Sink<T>& sink, size_t numQuantiles) : AbstractSink<T>(sink), numQuantiles(numQuantiles) {
+MunroPatersonSink<T>::MunroPatersonSink(Sink<T>* sink, size_t numQuantiles) : AbstractSink<T>(sink), numQuantiles(numQuantiles) {
 }
 
 template <typename T>
