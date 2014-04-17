@@ -15,3 +15,7 @@ src/filterd
 src/stamp-h1
 test/Makefile
 src/config.h.in~
+test/.deps/
+test/*.o
+test/all_tests
+

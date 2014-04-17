@@ -54,8 +54,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_filterd_OBJECTS = filterd.$(OBJEXT) buffering_filter.$(OBJEXT) \
-	composite_filter.$(OBJEXT) count_min_sketch_filter.$(OBJEXT) \
-	http_filter.$(OBJEXT) null_filter.$(OBJEXT) \
+	composite_filter.$(OBJEXT) http_filter.$(OBJEXT) \
+	munro_paterson_filter.$(OBJEXT) null_filter.$(OBJEXT) \
 	udp_filter.$(OBJEXT) sqlite3_filter.$(OBJEXT)
 filterd_OBJECTS = $(am_filterd_OBJECTS)
 filterd_LDADD = $(LDADD)
@@ -217,13 +217,26 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -I$(top_srcdir)/include $(SQLITE3_CFLAGS) $(LIBFCGI_CFLAGS) $(BOOST_CFLAGS) $(BOOST_THREAD_CFLAGS) $(BOOST_SYSTEM_CFLAGS)
-AM_LDFLAGS = $(SQLITE3_LDFLAGS) $(LIBFCGI_LDFLAGS) $(BOOST_LDFLAGS) $(BOOST_THREAD_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+AM_CPPFLAGS = -std=c++0x \
+							-I$(top_srcdir)/include \
+							$(SQLITE3_CFLAGS) \
+							$(LIBFCGI_CFLAGS) \
+							$(BOOST_CFLAGS) \
+						  $(BOOST_SYSTEM_CFLAGS) \
+							$(BOOST_THREAD_CFLAGS)
+
+AM_LDFLAGS = $(SQLITE3_LDFLAGS) \
+						 $(LIBFCGI_LDFLAGS) \
+						 $(BOOST_SYSTEM_LDFLAGS) \
+						 $(BOOST_SYSTEM_LIBS) \
+						 $(BOOST_THREAD_LDFLAGS) \
+						 $(BOOST_THREAD_LIBS)
+
 filterd_SOURCES = filterd.cc \
 									buffering_filter.cc \
 									composite_filter.cc \
-									count_min_sketch_filter.cc \
 									http_filter.cc \
+									munro_paterson_filter.cc \
 									null_filter.cc \
 									udp_filter.cc \
 									sqlite3_filter.cc
@@ -333,9 +346,9 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/buffering_filter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/composite_filter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/count_min_sketch_filter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filterd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/http_filter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/munro_paterson_filter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/null_filter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sqlite3_filter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/udp_filter.Po@am__quote@
